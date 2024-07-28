@@ -27,7 +27,7 @@ def q1_memory(request):
 
 
     # Leer el archivo línea por línea y procesar cada tweet
-    for line in read_file_from_gcs_in_chunks(bucket_name, file_path):
+    for line in lines:
         if not line.strip():
             continue
         tweet = json.loads(line)

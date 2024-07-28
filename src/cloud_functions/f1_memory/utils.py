@@ -23,28 +23,6 @@ def read_file_from_gcs(bucket_name: str, file_path: str) -> str:
     blob = bucket.blob(file_path)
     return blob.download_as_text()
 
-def read_file_from_gcs_in_chunks(bucket_name: str, file_path: str, chunk_size: int = 1024 * 1024):
-    """
-    Lee un archivo desde Google Cloud Storage en chunks.
-
-    Args:
-        bucket_name (str): El nombre del bucket de GCS.
-        file_path (str): La ruta del archivo dentro del bucket.
-        chunk_size (int): El tamaño de cada chunk a leer.
-
-    Yields:
-        str: Un chunk del contenido del archivo.
-    """
-    client = storage.Client()
-    bucket = client.bucket(bucket_name)
-    blob = bucket.blob(file_path)
-    with blob.open("r") as file:
-        while True:
-            chunk = file.read(chunk_size)
-            if not chunk:
-                break
-            yield chunk
-
 
 # ========================
 # Validador de esquema
