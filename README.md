@@ -86,7 +86,7 @@ Se implementa un pequeño pipeline de CI/CD en *.github\workflows\deploy.yaml* c
 Las credenciales de acceso de la cuenta son manejadas mediante los secretos del sepositorio de GitHub. Esto mismo podría aplicar para el ID del proyecto u otras credenciales que no convenga tener en el Secret Manager de GCP.
 
 
-![ProjectArch](docs\LATAMChallenge.png)
+![ProjectArch](docs/LATAMChallenge.png)
 
 ## Testing
 
