@@ -31,27 +31,5 @@ jobs:
           --region us-central1 \
           --memory=1GB \
           --source ./src/cloud_functions/q1_memory
-
-    - name: Deploy q2_memory
-      run: |
-        gcloud functions deploy q2_memory \
-          --entry-point=q2_memory \
-          --runtime python39 \
-          --trigger-http \
-          --allow-unauthenticated \
-          --region us-central1 \
-          --memory=1GB \
-          --source ./src/cloud_functions/q2_memory \
-          --set-env-vars GCP_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }}
-
-    - name: Deploy process_emoji_message
-      run: |
-        gcloud functions deploy process_emoji_message \
-          --entry-point=process_emoji_message \
-          --runtime python39 \
-          --trigger-topic emoji-topic \
-          --region us-central1 \
-          --memory=1GB \
-          --source ./src/cloud_functions/process_emoji_message
           
           
