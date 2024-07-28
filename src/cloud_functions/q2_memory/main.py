@@ -4,7 +4,7 @@ import emoji
 import regex
 import ujson
 import gc
-from utils import validate_tweet, read_file_from_gcs
+from utils import validate_tweet, read_file_from_gcs, extract_emojis
 
 def q2_memory(request):
     """
@@ -20,6 +20,7 @@ def q2_memory(request):
     file_path = request_json['file_path']
 
     emoji_count = Counter()
+    emoji_pattern = regex.compile(r'\X')
 
     # Leer archivo desde CLoud Storage
     file_content  = read_file_from_gcs(bucket_name, file_path)
@@ -31,14 +32,10 @@ def q2_memory(request):
         if not validate_tweet(tweet):  # Validar el esquema del tweet
             continue
         content = tweet.get("content", "")
-        
-        emoji_list = []
-        data = regex.findall(r'\X', content)
-        for word in data:
-            if any(char in emoji.EMOJI_DATA  for char in word):
-                emoji_list.append(word)
 
-        emoji_count.update(emoji_list)
+        emojis = extract_emojis(content, emoji_pattern)
+        emoji_count.update(emojis)
+
 
     # Liberar memoria de variables grandes
     del line
