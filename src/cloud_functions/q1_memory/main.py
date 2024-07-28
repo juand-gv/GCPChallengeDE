@@ -1,6 +1,6 @@
 from datetime import datetime
 from collections import defaultdict, Counter
-import json
+import ujson
 import gc
 from utils import validate_tweet, read_file_from_gcs
 
@@ -30,7 +30,7 @@ def q1_memory(request):
     for line in lines:
         if not line.strip():
             continue
-        tweet = json.loads(line)
+        tweet = ujson.loads(line)
         if not validate_tweet(tweet):  # Validar el esquema del tweet
             continue
         date = datetime.strptime(tweet["date"], "%Y-%m-%dT%H:%M:%S%z").date()  # Convertir la fecha a objeto de fecha
