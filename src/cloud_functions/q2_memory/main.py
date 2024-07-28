@@ -16,18 +16,23 @@ def q2_memory(request):
     file_content = read_file_from_gcs(bucket_name, file_path)
 
     # Procesar archivo por lotes
-    batch_size = 100
-    lines = file_content.split('\n')
-    
+    batch_size = 100  
     publisher = pubsub_v1.PublisherClient()
     topic_path = publisher.topic_path(__project_id__, topic_name)
     
-    for i in range(0, len(lines), batch_size):
-        batch = lines[i:i + batch_size]
-        for line in batch:
-            publisher.publish(topic_path, line.encode("utf-8"))
+    with read_file_from_gcs(bucket_name, file_path) as file:
+        batch = []
+        for line in file:
+            batch.append(line)
+            if len(batch) >= batch_size:
+                for line in batch:
+                    publisher.publish(topic_path, line.encode("utf-8"))
+                batch.clear()
+                gc.collect()
         
-        del batch
-        gc.collect()
+        # Process remaining lines if any
+        if batch:
+            for line in batch:
+                publisher.publish(topic_path, line.encode("utf-8"))
     
     return {"status": "Processing started"}

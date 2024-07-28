@@ -18,6 +18,5 @@ def process_emoji_message(event, context):
     store_emoji_count(emojis)
 
 def store_emoji_count(emojis):
-    # Implementar lógica para almacenar el conteo de emojis en un bucket o base de datos
-    # Por simplicidad, puedes imprimir los resultados por ahora
-    print(Counter(emojis))
+    emoji_count = Counter(emojis)
+    print(emoji_count)
