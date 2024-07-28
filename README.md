@@ -75,11 +75,11 @@ Returns:
 * Para medir el tiempo de ejecución te recomendamos [py-spy](https://github.com/benfred/py-spy) o [Python Profilers](https://docs.python.org/3/library/profile.html)
 
 
-
-
 # Implementación en la Nube
 
-Inicia con la carga del archivo json con los tweets a Cloud Storage. Se usa una Cloud Function con el fin de de procesar el archivo y obtener las top 10 fechas donde hay más tweets. Mencionar el usuario (username) que más publicaciones tiene por cada uno de esos días. La Cloud function incluye una validación de esquema usando la librería pydantic.
+Para este proyecto se usan dos ramas. La rama Master como rama principal con política se Pull Requests. Y la rama Develop como rama Fix/Feature. No se agregó revisión par ni limitaciones ya que no se estaba trabajando en conjunto.
+
+El desarrollo en la nube inicia con la carga del archivo json con los tweets a Cloud Storage. Se usa una Cloud Function con el fin de de procesar el archivo y obtener las top 10 fechas donde hay más tweets. Mencionar el usuario (username) que más publicaciones tiene por cada uno de esos días. La Cloud function incluye una validación de esquema usando la librería pydantic.
 
 Se implementa un pequeño pipeline de CI/CD en *.github\workflows\deploy.yaml* con el fin de mostrar el proceso de despliegue automático de una cloud function cada vez que se realiza un Merge de una rama a Master.
 
