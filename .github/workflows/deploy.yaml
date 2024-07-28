@@ -29,5 +29,7 @@ jobs:
           --trigger-http \
           --allow-unauthenticated \
           --region us-central1 \
+          --memory=500MB \
           --source ./src/cloud_functions/f1_memory
+          
           
