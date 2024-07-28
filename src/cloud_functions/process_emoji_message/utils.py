@@ -39,8 +39,8 @@ def extract_emojis(text, emoji_pattern):
     Returns:
         List[str]: Una lista de emojis encontrados en el texto, sin los modificadores de tono de piel.
     """
-    emojis = [word for word in emoji_pattern.findall(text) if any(char in emoji.EMOJI_DATA for char in word)]
-    return emojis
+    
+    return [word for word in emoji_pattern.findall(text) if any(char in emoji.EMOJI_DATA for char in word)]
 
 
 ## ========================
