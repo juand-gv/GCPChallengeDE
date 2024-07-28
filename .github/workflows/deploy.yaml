@@ -1,0 +1,33 @@
+name: Deploy Project
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Authenticate with Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+
+    - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+    - name: Deploy q1_memory
+      run: |
+        gcloud functions deploy q1_memory \
+          --entry-point=q1_memory \
+          -runtime python39 \
+          --trigger-http \
+          --allow-unauthenticated \
+          --region us-central1 \
+          --source /src/cloud_functions/f1_memory/
+          
