@@ -13,12 +13,17 @@ def q2_memory(request):
 
     # Leer archivo desde Cloud Storage
     file_content = read_file_from_gcs(bucket_name, file_path)
+
+    # Procesar archivo por lotes
+    batch_size = 500
     lines = file_content.split('\n')
     
-    # Publicar mensajes en Pub/Sub
     publisher = pubsub_v1.PublisherClient()
+    topic_path = publisher.topic_path(__project_id__, topic_name)
     
-    for line in lines:
-        publisher.publish(topic_name, line.encode("utf-8"))
+    for i in range(0, len(lines), batch_size):
+        batch = lines[i:i + batch_size]
+        for line in batch:
+            publisher.publish(topic_path, line.encode("utf-8"))
     
     return {"status": "Processing started"}
