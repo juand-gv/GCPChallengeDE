@@ -73,3 +73,50 @@ Returns:
 ## Sugerencias
 * Para medir la memoria en uso te recomendamos [memory-profiler](https://pypi.org/project/memory-profiler/) o [memray](https://github.com/bloomberg/memray)
 * Para medir el tiempo de ejecución te recomendamos [py-spy](https://github.com/benfred/py-spy) o [Python Profilers](https://docs.python.org/3/library/profile.html)
+
+
+
+
+# Implementación en la Nube
+
+Inicia con la carga del archivo json con los tweets a Cloud Storage. Se usa una Cloud Function con el fin de de procesar el archivo y obtener las top 10 fechas donde hay más tweets. Mencionar el usuario (username) que más publicaciones tiene por cada uno de esos días. La Cloud function incluye una validación de esquema usando la librería pydantic.
+
+Se implementa un pequeño pipeline de CI/CD en *.github\workflows\deploy.yaml* con el fin de mostrar el proceso de despliegue automático de una cloud function cada vez que se realiza un Merge de una rama a Master.
+
+Las credenciales de acceso de la cuenta son manejadas mediante los secretos del sepositorio de GitHub. Esto mismo podría aplicar para el ID del proyecto u otras credenciales que no convenga tener en el Secret Manager de GCP.
+
+
+![ProjectArch](docs\LATAMChallenge.png)
+
+## Testing
+
+Input para la Cloud Function:
+```Bash
+{
+    "bucket_name": "gcs-bucket-gtest-dev",
+    "file_path": "tweets/farmers-protest-tweets-2021-2-4.json"
+}
+```
+
+Resultado:
+```json
+{"top_dates":[["Fri, 12 Feb 2021 00:00:00 GMT","RanbirS00614606"],["Sat, 13 Feb 2021 00:00:00 GMT","MaanDee08215437"],["Wed, 17 Feb 2021 00:00:00 GMT","RaaJVinderkaur"],["Tue, 16 Feb 2021 00:00:00 GMT","jot__b"],["Sun, 14 Feb 2021 00:00:00 GMT","rebelpacifist"],["Thu, 18 Feb 2021 00:00:00 GMT","neetuanjle_nitu"],["Mon, 15 Feb 2021 00:00:00 GMT","jot__b"],["Sat, 20 Feb 2021 00:00:00 GMT","MangalJ23056160"],["Tue, 23 Feb 2021 00:00:00 GMT","Surrypuria"],["Fri, 19 Feb 2021 00:00:00 GMT","Preetm91"]]}
+```	
+
+
+Por cuestiones de tiempo se hace el ejemplo con una sola función. 
+Pero esto mismo puede ser replicado para el resto de funciones. 
+
+Bajo este mismo principio, podríamos replicar un escenario en el cual se reciba cada línea del JSON en streaming. 
+
+Se podría usar un Tópico de Pub/Sub con el fin de generar eventos hacia Cloud functions que se encarguen de 
+diferentes tareas como por ejemplo:
+* Validación del esquema
+* Transformación y estandarización de la data
+* Carga de la data
+
+
+
+### Repo interesante de mi autoría:
+
+[Data Migration and Management System (Globant Challenge)](https://github.com/juand-gv/ETLwithGCP).
