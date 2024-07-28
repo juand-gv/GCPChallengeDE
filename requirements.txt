@@ -1,1 +1,5 @@
 memory-profiler==0.61.0
+pydantic==2.6.4
+ujson==5.10.0
+regex==2024.7.24
+emoji==2.12.1
