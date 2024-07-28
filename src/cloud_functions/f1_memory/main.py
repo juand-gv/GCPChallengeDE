@@ -2,7 +2,7 @@ from datetime import datetime
 from collections import defaultdict, Counter
 import json
 import gc
-from utils import validate_tweet, read_file_from_gcs
+from utils import validate_tweet, read_file_from_gcs, read_file_from_gcs_in_chunks
 
 def q1_memory(request):
     """
@@ -27,7 +27,7 @@ def q1_memory(request):
 
 
     # Leer el archivo línea por línea y procesar cada tweet
-    for line in lines:
+    for line in read_file_from_gcs_in_chunks(bucket_name, file_path):
         if not line.strip():
             continue
         tweet = json.loads(line)
@@ -50,5 +50,5 @@ def q1_memory(request):
     # Obtener el usuario con más publicaciones en cada fecha
     result = [(date, user_count.most_common(1)[0][0]) for date, user_count in top_dates]
     
-    return {result}
+    return {'top_dates': result}
 
