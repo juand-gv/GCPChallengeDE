@@ -1,0 +1,2 @@
+Incluye en esta carpeta el archivo Json que desees procesar.
+No se incluye en el repo porque no es óptimo.
