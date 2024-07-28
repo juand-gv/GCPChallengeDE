@@ -1,9 +1,17 @@
 from datetime import datetime
 from collections import defaultdict, Counter
 import json
+import gc
 from utils import validate_tweet, read_file_from_gcs
 
 def q1_memory(request):
+    """
+    Usage:
+        {
+            "bucket_name": "gcs-bucket-gtest-dev",
+            "file_path": "tweets/farmers-protest-tweets-2021-2-4.json"
+        }
+    """
 
     request_json = request.get_json(silent=True)
     bucket_name = request_json['bucket_name']
@@ -29,6 +37,11 @@ def q1_memory(request):
         user = tweet["user"]["username"]  # Obtener el nombre de usuario
         date_user_count[date][user] += 1  # Incrementar el contador para el usuario en la fecha correspondiente
 
+
+    # Liberar memoria de variables grandes
+    del line
+    del tweet
+    gc.collect()
 
 
     # Ordenar por cantidad de tweets y obtener las 10 fechas principales
