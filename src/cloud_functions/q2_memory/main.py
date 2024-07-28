@@ -1,47 +1,24 @@
-from typing import List, Tuple
-from collections import Counter
-import emoji
-import regex
-import ujson
-import gc
-from utils import validate_tweet, read_file_from_gcs, extract_emojis
+from google.cloud import pubsub_v1
+from utils import read_file_from_gcs
+import os
+
+# Retrieve the Google Cloud project ID from environment variables
+__project_id__ = os.getenv("GCP_PROJECT_ID")
 
 def q2_memory(request):
-    """
-    Usage:
-        {
-            "bucket_name": "gcs-bucket-gtest-dev",
-            "file_path": "tweets/farmers-protest-tweets-2021-2-4.json"
-        }
-    """
-
     request_json = request.get_json(silent=True)
     bucket_name = request_json['bucket_name']
     file_path = request_json['file_path']
+    topic_name = f"projects/{__project_id__}/topics/tweets-topic"
 
-    emoji_count = Counter()
-    emoji_pattern = regex.compile(r'\X')
-
-    # Leer archivo desde CLoud Storage
-    file_content  = read_file_from_gcs(bucket_name, file_path)
+    # Leer archivo desde Cloud Storage
+    file_content = read_file_from_gcs(bucket_name, file_path)
     lines = file_content.split('\n')
-
-
-    for line in lines:
-        tweet = ujson.loads(line)
-        if not validate_tweet(tweet):  # Validar el esquema del tweet
-            continue
-        content = tweet.get("content", "")
-
-        emojis = extract_emojis(content, emoji_pattern)
-        emoji_count.update(emojis)
-
-
-    # Liberar memoria de variables grandes
-    del line
-    del tweet
-    gc.collect()
-
-    top_emojis = emoji_count.most_common(10)
     
-    return {"top_emojis": top_emojis}
+    # Publicar mensajes en Pub/Sub
+    publisher = pubsub_v1.PublisherClient()
+    
+    for line in lines:
+        publisher.publish(topic_name, line.encode("utf-8"))
+    
+    return {"status": "Processing started"}
