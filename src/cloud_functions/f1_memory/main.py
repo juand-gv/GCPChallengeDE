@@ -2,7 +2,7 @@ from datetime import datetime
 from collections import defaultdict, Counter
 import json
 import gc
-from utils import validate_tweet, read_file_from_gcs, read_file_from_gcs_in_chunks
+from utils import validate_tweet, read_file_from_gcs
 
 def q1_memory(request):
     """
